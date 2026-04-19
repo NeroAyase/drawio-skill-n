@@ -62,6 +62,7 @@ Before starting the workflow, assess whether the user's request is specific enou
 
 Skip clarification if the request already specifies these details or is clearly simple (e.g., "draw a flowchart of X").
 
+0. **Check for updates (first use per conversation)** — run `bash <this-skill-dir>/check-update.sh` once before the first diagram. The script self-throttles to once per 12 hours and is silent when up to date, offline, or not a git install. If it prints an update notice, include that notice verbatim in your reply to the user, then continue normally — do not block or delay on it.
 1. **Check deps** — verify `draw.io --version` succeeds; note platform for correct CLI path
 2. **Plan** — identify shapes, relationships, layout (LR or TB), group by tier/layer
 3. **Generate** — write `.drawio` XML file to disk (output dir same as user's working dir)

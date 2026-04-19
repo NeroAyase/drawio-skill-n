@@ -212,23 +212,15 @@ clawhub install drawio-pro-skill
 
 ## Updates
 
-Check for updates:
-
-```bash
-# Run from anywhere — pass your install path
-bash ~/.claude/skills/drawio-skill/scripts/check-update.sh
-
-# Or from the skill directory
-cd ~/.claude/skills/drawio-skill && bash scripts/check-update.sh
-```
-
-Update to latest version:
+The skill auto-checks for updates once per 12 hours on first use in a conversation. When a new version is available, the agent prints a one-line notice in the reply. To apply:
 
 ```bash
 cd <your-install-path>/drawio-skill && git pull
 ```
 
-Platform-specific package managers:
+The check is read-only, self-throttled, and silent when up to date, offline, or not a git install — it won't block or slow the workflow.
+
+Package-manager installs handle updates themselves:
 
 ```bash
 # OpenClaw
@@ -286,7 +278,7 @@ CI/CD pipeline with a closed loop and 2 spur branches. Edges flow along the peri
 
 - `SKILL.md` — **the only required file**. Loaded by all platforms as the skill instructions.
 - `agents/openai.yaml` — OpenAI Codex-specific configuration (UI, policy)
-- `scripts/check-update.sh` — lightweight update checker (compares local vs remote HEAD)
+- `check-update.sh` — auto-runs on first skill use per conversation; self-throttled to once per 12h, silent when up to date
 - `README.md` — this file (English, displayed on GitHub homepage)
 - `README_CN.md` — Chinese documentation
 - `assets/` — example diagrams and workflow images
