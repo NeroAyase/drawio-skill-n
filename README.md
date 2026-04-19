@@ -292,7 +292,7 @@ CI/CD pipeline with a closed loop and 2 spur branches. Edges flow along the peri
 
 - `SKILL.md` — **the only required file**. Loaded by all platforms as the skill instructions.
 - `agents/openai.yaml` — OpenAI Codex-specific configuration (UI, policy)
-- `update.sh` — auto-runs on first skill use per conversation; self-throttled to once per 12h, silent when up to date
+- Auto-update is inline in `SKILL.md` (step 0): a 24h-throttled `git pull --ff-only` on first use per conversation
 - `README.md` — this file (English, displayed on GitHub homepage)
 - `README_CN.md` — Chinese documentation
 - `assets/` — example diagrams and workflow images
