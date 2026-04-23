@@ -15,13 +15,20 @@ After extracting a candidate preset, render this seven-node sample using the can
 
 The vertex style for role `R` is built as:
 `<shapes[R]>;whiteSpace=wrap;html=1;fillColor=<palette[roles[R]].fillColor>;strokeColor=<palette[roles[R]].strokeColor>;fontFamily=<font.fontFamily>;fontSize=<font.fontSize>`
-- If `extras.sketch=true`, append `;sketch=1`.
-- If `extras.globalStrokeWidth > 1`, append `;strokeWidth=<n>`.
+- If `extras.sketch=true`, append `;sketch=1` to every vertex style AND every edge style.
+- If `extras.globalStrokeWidth !== 1` (i.e., any value other than the drawio default of 1, including `0.5`), append `;strokeWidth=<n>` to every vertex style AND every edge style.
 
 The edge style is built as:
 `<edges.style>;<edges.arrow>`
 - Per-edge routing keys (`exitX/entryX/...`) are added as literals below.
-- One edge is labeled `"optional"` and rendered with `;dashed=1` appended, so `edges.dashedFor` behavior is visible.
+- Edge 15 exercises `edges.dashedFor`:
+  - If `edges.dashedFor` is **non-empty**, use its first entry as the edge's `value` (label) AND append `;dashed=1` to the edge style.
+  - If `edges.dashedFor` is empty (`[]`), use the label `cross-call` and do NOT append `;dashed=1` — the preset has no dashed convention, so the sample must not fake one.
+
+**Placeholder expansion (applied when filling the XML):**
+- `{{VSTYLE:<role>}}` expands to the vertex-style formula above with `R = <role>`. Write the result as a literal string; do not URL-encode.
+- `{{ESTYLE}}` expands to the edge-style formula above.
+- `{{EDGE15_LABEL}}` and `{{EDGE15_DASH}}` follow the Edge-15 rule above.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -75,7 +82,7 @@ The edge style is built as:
         <mxCell id="14" value="" style="{{ESTYLE}};exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="4" target="6">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="15" value="optional" style="{{ESTYLE}};dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="4" target="8">
+        <mxCell id="15" value="{{EDGE15_LABEL}}" style="{{ESTYLE}}{{EDGE15_DASH}};exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0" edge="1" parent="1" source="4" target="8">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
