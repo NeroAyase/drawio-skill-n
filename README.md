@@ -23,7 +23,7 @@ Works with all major AI coding agents that support the [Agent Skills](https://ag
 
 | Platform | Status | Details |
 |----------|--------|---------|
-| **Claude Code** | ✅ Full support | Native SKILL.md format |
+| **Claude Code** | ✅ Full support | Native SKILL.md format + plugin marketplace (`/plugin install drawio`) |
 | **Opencode** | ✅ Full support | Native SKILL.md via `skill` tool; also reads `.claude/skills/` paths |
 | **OpenClaw / ClawHub** | ✅ Full support | `metadata.openclaw` namespace, dependency gating, ClawHub installer |
 | **Hermes Agent** | ✅ Full support | `metadata.hermes` namespace, tags, tool gating |
@@ -72,14 +72,14 @@ Works with all major AI coding agents that support the [Agent Skills](https://ag
 | **Browser fallback** | ✅ diagrams.net URL | ❌ | ❌ | ❌ |
 | **Auto-launch** | ✅ opens desktop app | ❌ | ❌ | ❌ |
 | **Cloud icons** | AWS basic | ❌ | ✅ AWS/GCP/Azure/K8s | ❌ |
-| **Zero-config** | ✅ copy SKILL.md | ✅ | ❌ needs `npx` | ❌ needs plugin install |
+| **Zero-config** | ✅ copy skills/drawio-skill/ | ✅ | ❌ needs `npx` | ❌ needs plugin install |
 
 ### Key advantages
 
 1. **Self-check + iterative loop** — the only pure-SKILL.md solution that reads its own output and auto-fixes before showing the user, then supports multi-round refinement
 2. **6 diagram type presets** — ERD, UML Class, Sequence, Architecture, ML/Deep Learning, Flowchart — each with preset shapes, styles, and layout conventions
 3. **ML/DL model diagrams** — tensor shape annotations, layer-type color coding, encoder/decoder swimlanes — built for academic papers
-4. **Multi-agent, zero-config** — works across 6 platforms with just one `SKILL.md` file + draw.io desktop. No MCP server, no Python, no Node.js, no browser
+4. **Multi-agent, zero-config** — works across 6 platforms with just the `skills/drawio-skill/` directory + draw.io desktop. No MCP server, no Python, no Node.js, no browser
 5. **Production-grade layout** — grid-aligned coordinates, complexity-scaled spacing, routing corridors, hub-center strategy, animated connectors
 6. **Browser fallback** — generates diagrams.net URLs when the desktop CLI is unavailable, plus auto-launch for desktop editing
 
@@ -143,8 +143,8 @@ xvfb-run -a drawio --version
 
 ```bash
 # Plugin marketplace (recommended)
-# In Claude Code: /plugin marketplace add Agents365-ai/365-skills
-# Then: /plugin install drawio
+/plugin marketplace add Agents365-ai/365-skills
+/plugin install drawio
 
 # Manual global install
 git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/drawio-skill
@@ -240,9 +240,12 @@ cd <your-install-path>/drawio-skill && git pull
 
 The check is read-only, self-throttled, and silent when up to date, offline, or not a git install — it won't block or slow the workflow.
 
-Package-manager installs handle updates themselves:
+Plugin-marketplace installs update automatically via the 365-skills umbrella. Package-manager installs handle updates themselves:
 
 ```bash
+# Claude Code plugin
+/plugin update drawio
+
 # OpenClaw
 clawhub update drawio-pro-skill
 

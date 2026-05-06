@@ -23,7 +23,7 @@
 
 | 平台 | 支持状态 | 说明 |
 |------|----------|------|
-| **Claude Code** | ✅ 完全支持 | 原生 SKILL.md 格式 |
+| **Claude Code** | ✅ 完全支持 | 原生 SKILL.md 格式 + 插件市场 (`/plugin install drawio`) |
 | **Opencode** | ✅ 完全支持 | 通过原生 `skill` 工具加载 SKILL.md，同时兼容 `.claude/skills/` 路径 |
 | **OpenClaw / ClawHub** | ✅ 完全支持 | `metadata.openclaw` 命名空间，依赖检测，ClawHub 安装器 |
 | **Hermes Agent** | ✅ 完全支持 | `metadata.hermes` 命名空间，标签分类，工具门控 |
@@ -72,14 +72,14 @@
 | **浏览器降级** | ✅ diagrams.net URL | ❌ | ❌ | ❌ |
 | **自动启动** | ✅ 打开桌面版 | ❌ | ❌ | ❌ |
 | **云图标** | AWS 基础 | ❌ | ✅ AWS/GCP/Azure/K8s | ❌ |
-| **零配置** | ✅ 复制 SKILL.md | ✅ | ❌ 需要 `npx` | ❌ 需安装插件 |
+| **零配置** | ✅ 复制 skills/drawio-skill/ | ✅ | ❌ 需要 `npx` | ❌ 需安装插件 |
 
 ### 核心优势
 
 1. **自检 + 迭代循环** — 唯一纯 SKILL.md 方案中能自动读取输出、修复问题、支持多轮优化的
 2. **6 种图表类型预设** — ERD、UML 类图、序列图、架构图、ML/深度学习、流程图 — 每种都有预设形状、样式和布局规范
 3. **ML/DL 模型图** — 张量形状标注、层类型配色、编码器/解码器泳道 — 专为学术论文打造
-4. **多智能体、零配置** — 跨 6 个平台运行，仅需一个 `SKILL.md` 文件 + draw.io 桌面版，无需 MCP、Python、Node.js、浏览器
+4. **多智能体、零配置** — 跨 6 个平台运行，仅需 `skills/drawio-skill/` 目录 + draw.io 桌面版，无需 MCP、Python、Node.js、浏览器
 5. **专业级布局** — 网格对齐坐标、按复杂度分级间距、路由走廊、hub 居中策略、动画连接线
 6. **浏览器降级** — 桌面 CLI 不可用时生成 diagrams.net URL，导出后自动启动桌面版编辑
 
@@ -143,8 +143,8 @@ xvfb-run -a drawio --version
 
 ```bash
 # 插件市场安装（推荐）
-# 在 Claude Code 中输入：/plugin marketplace add Agents365-ai/365-skills
-# 然后：/plugin install drawio
+/plugin marketplace add Agents365-ai/365-skills
+/plugin install drawio
 
 # 手动全局安装（所有项目可用）
 git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/drawio-skill
@@ -240,9 +240,12 @@ cd <你的安装路径>/drawio-skill && git pull
 
 检查为只读、自节流，在已是最新版、离线、或非 git 安装时静默退出，不会阻塞或拖慢工作流。
 
-通过包管理器安装的用户直接用对应命令更新：
+通过插件市场安装的用户通过 365-skills umbrella 自动更新。通过包管理器安装的用户直接用对应命令更新：
 
 ```bash
+# Claude Code 插件
+/plugin update drawio
+
 # OpenClaw
 clawhub update drawio-pro-skill
 
