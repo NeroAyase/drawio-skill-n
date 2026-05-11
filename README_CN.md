@@ -85,131 +85,16 @@
   <img src="assets/workflow-cn.png" width="420" alt="工作流程">
 </p>
 
-## 前置依赖
-
-需要安装 draw.io 桌面版用于图表导出：
-
-### macOS
-
-```bash
-# 推荐方式 — Homebrew
-brew install --cask drawio
-
-# 验证安装
-drawio --version
-```
-
-### Windows
-
-从以下地址下载安装包：https://github.com/jgraph/drawio-desktop/releases
-
-```powershell
-# 验证安装
-"C:\Program Files\draw.io\draw.io.exe" --version
-```
-
-### Linux
-
-从以下地址下载 `.deb` 或 `.rpm` 包：https://github.com/jgraph/drawio-desktop/releases
-
-```bash
-# 无头导出（Linux 服务器无显示器时必须）
-sudo apt install xvfb  # Debian/Ubuntu
-xvfb-run -a drawio --version
-```
-
-| 平台 | 额外步骤 |
-|------|----------|
-| **macOS** | Homebrew 安装后无需额外操作 |
-| **Windows** | 如不在 PATH 中，使用完整路径 |
-| **Linux** | 无头导出时命令前加 `xvfb-run -a` |
-
 ## 安装
 
-```bash
-# 任意 Agent（Claude Code、Cursor、Copilot 等）
-npx skills add Agents365-ai/365-skills -g
+两步 —— 先装 draw.io CLI,再把技能加载到 host:
 
-# 仅 Claude Code
-> /plugin marketplace add Agents365-ai/365-skills
-> /plugin install drawio
-```
-
-手动安装 —— 克隆到你的 Agent skills 目录：
-
-```bash
-git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/drawio-skill
-```
-
-常用路径：`~/.claude/skills/`（Claude Code）、`~/.config/opencode/skills/`（Opencode）、`~/.openclaw/skills/`（OpenClaw）、`~/.agents/skills/`（Codex）。同时已索引于 [SkillsMP](https://skillsmp.com/skills/agents365-ai-drawio-skill-skill-md) 和 [ClawHub](https://clawhub.ai/agents365-ai/drawio-pro-skill)。
-
-## 更新
-
-Skill 会在每次对话首次使用时自动检查更新（24 小时节流）。有新版本时，Agent 会在回复中打印一行提示。应用更新：
-
-```bash
-cd <你的安装路径>/drawio-skill && git pull
-```
-
-检查为只读、自节流，在已是最新版、离线、或非 git 安装时静默退出，不会阻塞或拖慢工作流。
-
-通过插件市场安装的用户通过 365-skills umbrella 自动更新。通过包管理器安装的用户直接用对应命令更新：
-
-```bash
-# Claude Code 插件
-/plugin update drawio
-
-# OpenClaw
-clawhub update drawio-pro-skill
-
-# SkillsMP
-skills update drawio-skill
-```
+1. **[安装 draw.io 桌面版](INSTALL_CLI_CN.md)** —— macOS / Windows / Linux 各平台配方。
+2. **[安装技能](INSTALL_SKILL_CN.md)** —— 插件市场(推荐)、手动克隆、以及更新命令。
 
 ## 使用方式
 
-直接描述你想要的图表：
-
-```
-画一个微服务电商架构图，包含 Mobile/Web/Admin 客户端，API Gateway，
-Auth/User/Order/Product/Payment 微服务，Kafka 消息队列，Notification 服务，
-以及各自独立的数据库
-```
-
-智能体会自动生成 `.drawio` 文件并导出为 PNG。
-
-## 示例
-
-**提示词：**
-> 画一个微服务电商架构图，包含 Mobile/Web/Admin 客户端，API Gateway（含认证+限流+路由），
-> Auth/User/Order/Product/Payment 微服务，Kafka 消息队列，Notification 服务，
-> User DB / Order DB / Product DB / Redis Cache / Stripe API
-
-**输出效果：**
-
-![微服务架构图](assets/microservices-example.png)
-
-## 拓扑示例
-
-本 skill 支持多种图表拓扑，线条路由清晰 —— 不会穿越无关的形状。
-
-### 星形拓扑（7 个节点）
-
-中央消息代理 + 6 个微服务辐射排列。连线从不同方向进入 Kafka，零交叉。
-
-![星形拓扑](assets/demo-star-cn.png)
-
-### 分层流程（10 个节点，4 层）
-
-电商架构，含 2 条交叉连线：订单→商品（同层水平）和 认证→Redis（对角线，经路由走廊绕行）。所有线条路由清晰。
-
-![分层流程](assets/demo-layered-cn.png)
-
-### 环形 / 循环（8 个节点）
-
-CI/CD 流水线，包含闭合回路和 2 个分支。线条沿矩形外围流动，不穿越内部区域。
-
-![环形循环](assets/demo-ring-cn.png)
+参见 [USAGE_CN.md](USAGE_CN.md) —— 包含自然语言提示词、微服务示例,以及多种拓扑演示(星形 / 分层 / 环形)。
 
 ## 文件说明
 

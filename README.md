@@ -85,130 +85,16 @@
   <img src="assets/workflow.png" width="420" alt="Workflow">
 </p>
 
-## Prerequisites
-
-The draw.io desktop app must be installed for diagram export:
-
-### macOS
-
-```bash
-# Recommended — Homebrew
-brew install --cask drawio
-
-# Verify
-drawio --version
-```
-
-### Windows
-
-Download and install from: https://github.com/jgraph/drawio-desktop/releases
-
-```powershell
-# Verify
-"C:\Program Files\draw.io\draw.io.exe" --version
-```
-
-### Linux
-
-Download `.deb` or `.rpm` from: https://github.com/jgraph/drawio-desktop/releases
-
-```bash
-# Headless export (required on Linux servers without display)
-sudo apt install xvfb  # Debian/Ubuntu
-xvfb-run -a drawio --version
-```
-
-| Platform | Extra step |
-|----------|------------|
-| **macOS** | No extra steps after Homebrew install |
-| **Windows** | Use full path if not in PATH |
-| **Linux** | Wrap commands with `xvfb-run -a` for headless export |
-
 ## Installation
 
-```bash
-# Any agent (Claude Code, Cursor, Copilot, etc.)
-npx skills add Agents365-ai/365-skills -g
+Two steps — install the draw.io CLI first, then drop the skill into your host:
 
-# Claude Code only
-> /plugin marketplace add Agents365-ai/365-skills
-> /plugin install drawio
-```
-
-Manual install — clone into your agent's skills directory:
-
-```bash
-git clone https://github.com/Agents365-ai/drawio-skill.git ~/.claude/skills/drawio-skill
-```
-
-Common paths: `~/.claude/skills/` (Claude Code), `~/.config/opencode/skills/` (Opencode), `~/.openclaw/skills/` (OpenClaw), `~/.agents/skills/` (Codex). Also indexed on [SkillsMP](https://skillsmp.com/skills/agents365-ai-drawio-skill-skill-md) and [ClawHub](https://clawhub.ai/agents365-ai/drawio-pro-skill).
-
-## Updates
-
-The skill auto-checks for updates once per 24 hours on first use in a conversation. When a new version is available, the agent prints a one-line notice in the reply. To apply:
-
-```bash
-cd <your-install-path>/drawio-skill && git pull
-```
-
-The check is read-only, self-throttled, and silent when up to date, offline, or not a git install — it won't block or slow the workflow.
-
-Plugin-marketplace installs update automatically via the 365-skills umbrella. Package-manager installs handle updates themselves:
-
-```bash
-# Claude Code plugin
-/plugin update drawio
-
-# OpenClaw
-clawhub update drawio-pro-skill
-
-# SkillsMP
-skills update drawio-skill
-```
+1. **[Install draw.io desktop](INSTALL_CLI.md)** — per-platform recipes for macOS / Windows / Linux.
+2. **[Install the skill](INSTALL_SKILL.md)** — plugin marketplace (recommended), manual clone, and update commands.
 
 ## Usage
 
-Just describe what you want:
-
-```
-Create a microservices e-commerce architecture with API Gateway, auth/user/order/product/payment services,
-Kafka message queue, notification service, and separate databases for each service
-```
-
-The agent will generate the `.drawio` XML file and export it to PNG automatically.
-
-## Example
-
-**Prompt:**
-> Create a microservices e-commerce architecture with Mobile/Web/Admin clients, API Gateway,
-> Auth/User/Order/Product/Payment services, Kafka message queue, Notification service,
-> and User DB / Order DB / Product DB / Redis Cache / Stripe API
-
-**Output:**
-
-![Microservices Architecture](assets/microservices-example.png)
-
-## Topology demos
-
-The skill handles various diagram topologies with clean edge routing — no lines crossing through shapes.
-
-### Star topology (7 nodes)
-
-Central message broker with 6 microservices radiating outward. Edges enter Kafka from different sides, zero crossings.
-
-![Star topology](assets/demo-star.png)
-
-### Layered flow (10 nodes, 4 tiers)
-
-E-commerce architecture with 2 cross-connections: Order→Product (same-tier horizontal) and Auth→Redis (diagonal via routing corridor). All edges route cleanly.
-
-![Layered flow](assets/demo-layered.png)
-
-### Ring / cycle (8 nodes)
-
-CI/CD pipeline with a closed loop and 2 spur branches. Edges flow along the perimeter without crossing the interior.
-
-![Ring cycle](assets/demo-ring.png)
+See [USAGE.md](USAGE.md) for natural-language prompts, a microservices walkthrough, and topology demos (star / layered / ring).
 
 ## Files
 
