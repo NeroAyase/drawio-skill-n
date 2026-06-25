@@ -1,11 +1,7 @@
 ---
-name: drawio-skill
-version: 1.14.0
+name: drawio-skill-n
 description: Use when the user requests diagrams, flowcharts, architecture diagrams, ER diagrams, UML / sequence / class diagrams, network topology, ML/DL model figures (Transformer/CNN/LSTM), mind maps, or any visualization. Also use proactively when explaining systems with 3+ components, complex data flows, or relationships that benefit from visual representation. Best suited when the diagram needs custom styling, rich shape vocabulary, swimlanes, or exportable images (PNG/SVG/PDF/JPG). Generates .drawio XML and exports locally via the native draw.io desktop CLI.
 license: MIT
-homepage: https://github.com/Agents365-ai/drawio-skill
-compatibility: Requires draw.io desktop app CLI on PATH (macOS/Linux/Windows). Self-check step requires a vision-enabled model (e.g., Claude Sonnet/Opus); gracefully skipped if unavailable. Optional auto-layout (scripts/autolayout.py) needs Graphviz (dot).
-platforms: [macos, linux, windows]
 metadata: {"openclaw":{"requires":{"anyBins":["draw.io","drawio"]},"emoji":"📐","os":["darwin","linux","win32"],"install":[{"id":"brew-drawio","kind":"brew","formula":"drawio","bins":["drawio"],"label":"Install draw.io via Homebrew","os":["darwin"]},{"id":"brew-graphviz","kind":"brew","formula":"graphviz","bins":["dot"],"label":"Install Graphviz for optional autolayout.py","os":["darwin"],"optional":true}]},"hermes":{"tags":["drawio","diagram","flowchart","architecture","visualization","uml"],"category":"design","requires_tools":["drawio","draw.io"],"related_skills":["mermaid","excalidraw","plantuml"]},"author":"Agents365-ai","version":"1.14.0"}
 ---
 
@@ -40,9 +36,12 @@ When the workflow references one of these, read it on demand — none of them ne
 | `references/style-presets.md` | The user asks to learn / save / list / set-default / delete a style preset, or you've resolved an active preset and need the application rules |
 | `references/style-extraction.md` | You're inside the Learn flow and need the extraction procedure (called from `style-presets.md`) |
 | `references/troubleshooting.md` | An export fails, vision rejects a PNG, or a rendering looks wrong |
+| `references/export.md` | You need detailed draw.io desktop CLI export flags, final editable PNG export, page-specific export, or fallback export behavior |
 | `scripts/repair_png.py` | After every `-e` PNG export — fixes draw.io's truncated IEND chunk (issue #8) |
 | `scripts/encode_drawio_url.py` | The CLI is unavailable and you need a browser-fallback diagrams.net URL (`--edit` for an editable editor URL) |
 | `references/autolayout.md` | The diagram is large or layout-heavy (dependency/call graph, code structure, >~15 nodes) and you want Graphviz to place nodes + route edges instead of hand-placing coordinates |
+| `references/chinese-swimlane-layout.md` | The diagram is a dense Chinese business process, vertical swimlane, cross-role workflow, or any case where Chinese text, connectors, labels, and lane spacing are likely to overlap |
+| `scripts/chinese_swimlane_template.py` | The user asks for a compact Chinese swimlane package or dense business-process diagram with pages for main flow, config/runtime context, field/info flow, and exception handling |
 | `scripts/pyimports.py` · `jsimports.py` · `goimports.py` · `rustimports.py` | The user wants to visualize a **Python, JS/TS, Go, or Rust project** structure — extracts the import graph (transitive-reduced, optional `--group` containers, nested by sub-package) for autolayout |
 | `scripts/pyclasses.py` | The user wants a **Python class hierarchy / class diagram** — extracts classes + inheritance edges (boxed by module with `--group`) for autolayout |
 | `scripts/validate.py` | You generated a `.drawio` (especially via autolayout or for a large hand-placed diagram) and want a fast deterministic structural lint (dangling edges, dup/reserved ids, broken parents, overlaps) before the vision self-check |
@@ -75,6 +74,26 @@ Install draw.io desktop if missing:
 
 ## Workflow
 
+## Language fidelity
+
+- Match all visible diagram text to the user's language.
+- If the user's request is in Chinese, every visible title, node label, swimlane/container name, edge label, note, legend, and annotation must be written in Chinese by default.
+- Keep only proper nouns, product names, protocols, API names, class/function identifiers, filenames, and code symbols in their original language when translating them would be misleading.
+- Do not translate a Chinese diagram request into English during planning or generation, and do not use English placeholder labels such as `User`, `Service`, `Database`, `Start`, `End`, or `Yes/No` unless the user explicitly asked for English.
+- For Chinese diagrams, prefer concise Chinese labels such as `用户`, `服务`, `数据库`, `开始`, `结束`, `是`, and `否`, while preserving technical names like `Redis`, `Kafka`, `REST API`, `JWT`, `OpenAI`, and `Kubernetes`.
+
+## Visual clearance requirements
+
+For business process, architecture, swimlane, and other dense diagrams, visual clearance is a hard acceptance gate:
+
+- Do not allow text, shapes, edge labels, connectors, or swimlane title areas to overlap.
+- Do not route connectors through unrelated shapes; use explicit waypoints and empty corridors when needed.
+- Pin connection points for dense process/swimlane edges instead of relying on draw.io auto endpoint selection.
+- Run `scripts/validate.py` after generating or editing a `.drawio`; fix all dense-diagram warnings before delivery.
+- Export every page to PNG and visually inspect all pages, not just page 1.
+- For dense Chinese swimlanes, cross-role workflows, operational flows, approval flows, quality/audit flows, or any diagram with many Chinese labels and exception connectors, read `references/chinese-swimlane-layout.md` before laying out or repairing the diagram.
+- For compact Chinese swimlane packages, start from `scripts/chinese_swimlane_template.py` when the requested structure fits its four-page pattern.
+
 Before starting the workflow, assess whether the user's request is specific enough. If key details are missing, ask 1-3 focused questions:
 - **Diagram type** — which preset? (ERD, UML, Sequence, Architecture, ML/DL, Flowchart, or general)
 - **Output format** — PNG (default), SVG, PDF, or JPG?
@@ -86,10 +105,10 @@ Skip clarification if the request already specifies these details or is clearly 
 **Step 0 — Resolve active preset.** Determine which (if any) user-defined style preset applies to this generation.
 
 - Scan the user's message for a phrase that clearly names a style preset: "use my `<name>` style", "with my `<name>` style", "in `<name>` mode", "in the style of `<name>`". A bare `with <name>` does **not** count — "draw a diagram with redis" names a component, not a style. If a clear match is found → active preset = `<name>`.
-- Else, check `~/.drawio-skill/styles/` for any file with `"default": true`. If found → active preset = that one.
+- Else, check `~/.drawio-skill-n/styles/` for any file with `"default": true`. If found → active preset = that one.
 - Else → no preset active; fall through to the built-in color/shape/edge conventions for the rest of the workflow.
 
-Load the preset JSON from `~/.drawio-skill/styles/<name>.json`, falling back to `<this-skill-dir>/styles/built-in/<name>.json`. If the named preset exists in neither location, tell the user the name is unknown, list the available presets (user dir + built-in), and stop — do **not** silently fall back to defaults.
+Load the preset JSON from `~/.drawio-skill-n/styles/<name>.json`, falling back to `<this-skill-dir>/styles/built-in/<name>.json`. If the named preset exists in neither location, tell the user the name is unknown, list the available presets (user dir + built-in), and stop — do **not** silently fall back to defaults.
 
 When a preset loads successfully, mention it in the first line of the reply: *"Using preset `<name>` (confidence: `<level>`)."* See the **Applying a preset** subsection below for how the preset changes color/shape/edge/font decisions.
 
@@ -166,7 +185,7 @@ Once the user approves:
 A **style preset** is a named JSON file capturing a user's visual preferences (palette, shapes, font, edges). When active, it fully replaces the built-in color/shape conventions in this skill.
 
 **Lookup order** when SKILL.md's Step 0 resolves a preset name:
-1. `~/.drawio-skill/styles/<name>.json` — user presets (survive `git pull`)
+1. `~/.drawio-skill-n/styles/<name>.json` — user presets (survive `git pull`)
 2. `<this-skill-dir>/styles/built-in/<name>.json` — shipped built-ins (`default`, `corporate`, `handdrawn`)
 
 Always lowercase the user-provided name before any file operation — the schema enforces lowercase.
@@ -293,6 +312,24 @@ For architecture diagrams with nested elements, use draw.io's parent-child conta
 - Pin `exitX/exitY/entryX/entryY` on every edge when a node has 2+ connections — distributes lines across the shape perimeter
 - Add `<Array as="points">` waypoints when an edge must detour around an intermediate shape
 - **Leave room for arrowheads:** the final straight segment between the last bend and the target shape must be ≥20px long. If too short, the arrowhead overlaps the bend and looks broken. Fix by increasing node spacing or adding explicit waypoints
+- For horizontal flow through a `rhombus`, never rely on automatic connection points. Use `entryX=0;entryY=0.5` for the incoming edge, `exitX=1;exitY=0.5` for the straight-through outgoing edge, and top/bottom exits for branch edges.
+- For branch edges with labels, explicitly place the label away from nodes with `<mxPoint x="..." y="..." as="offset" />`. Do not accept labels that float onto rectangles or lane boundary lines.
+
+**Decision bypass template:** use this pattern when a decision branch skips over downstream nodes in a swimlane. The branch exits the diamond top point, travels through an empty corridor, and drops into the target's top center; the label sits on the corridor.
+
+```xml
+<mxCell id="bypass1" value="已有文本"
+        style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;"
+        edge="1" parent="1" source="decision1" target="target1">
+  <mxGeometry relative="1" as="geometry">
+    <Array as="points">
+      <mxPoint x="600" y="220" />
+      <mxPoint x="1100" y="220" />
+    </Array>
+    <mxPoint x="0" y="-20" as="offset" />
+  </mxGeometry>
+</mxCell>
+```
 
 ### Distributing connections on a shape
 
@@ -356,93 +393,23 @@ When multiple edges connect to the same shape, assign different entry/exit point
 
 ## Export
 
-### Commands
-
-There are **two** export modes:
-
-- **Preview / self-check** (step 4 of the workflow) — no `-e`. Output `diagram.png`. Required for vision self-check; using `-e` here triggers a 400 "Could not process image" error from the vision API (issue #8).
-- **Final / deliverable** (step 7) — pass `-e`. Output `diagram.drawio.png`. The embedded XML keeps the file editable in draw.io.
-
-> All commands below write `drawio` as a placeholder for the binary you resolved in Step 1. If your binary is on PATH as `draw.io` (with dot — some older or distro-packaged installs), substitute `draw.io` throughout. If only the macOS `.app` or Windows `.exe` is available, use the full path variant shown a few lines down.
+Use `drawio -x` for exports. For detailed flags, page export, and fallbacks, read `references/export.md`.
 
 ```bash
-# Preview PNG (use this in step 4, before self-check) — NO -e, width-capped to stay under vision's 2576px ceiling
+# Preview PNG: do not use -e
 drawio -x -f png --width 2000 -o diagram.png input.drawio
 
-# Final PNG (step 7, after user approval) — WITH -e, double extension
+# Final editable PNG: use -e and repair the PNG
 drawio -x -f png -e -s 2 -o diagram.drawio.png input.drawio
-
-# macOS — full path (if not in PATH); preview / final variants
-/Applications/draw.io.app/Contents/MacOS/draw.io -x -f png --width 2000 -o diagram.png input.drawio
-/Applications/draw.io.app/Contents/MacOS/draw.io -x -f png -e -s 2 -o diagram.drawio.png input.drawio
-
-# Windows
-"C:\Program Files\draw.io\draw.io.exe" -x -f png -e -s 2 -o diagram.drawio.png input.drawio
-
-# Linux (headless — requires xvfb-run; on servers add HOME and --disable-gpu)
-export HOME=${HOME:-/tmp}
-xvfb-run -a --server-args="-screen 0 1280x1024x24" \
-  drawio -x -f png -e -s 2 -o diagram.drawio.png input.drawio --disable-gpu
-# Running as root (CI / Docker)? Append --no-sandbox AT THE END (placing it earlier makes drawio treat it as the input filename)
-
-# SVG export (final — -e is safe; SVG is text)
-drawio -x -f svg -e -o diagram.svg input.drawio
-
-# PDF export (final)
-drawio -x -f pdf -e -o diagram.pdf input.drawio
-
-# Custom output directory (e.g. CI artifacts dir) — create if missing, then export there
-mkdir -p ./artifacts && drawio -x -f png -e -s 2 -o ./artifacts/diagram.drawio.png input.drawio
-```
-
-### Post-export PNG repair (required after `-e` PNG export)
-
-draw.io CLI truncates the IEND chunk when emitting `-e` PNGs — the file ends with the 4-byte IEND length field but the `IEND` type + CRC (8 bytes) are missing. Result: vision APIs return 400 "Could not process image" and strict PNG decoders error out. SVG/PDF are unaffected.
-
-Run this immediately after every `-e` PNG export:
-
-```bash
 python3 <this-skill-dir>/scripts/repair_png.py diagram.drawio.png
 ```
 
-The script's `endswith(IEND)` guard makes it a no-op once draw.io fixes the bug upstream — safe to run unconditionally.
-
-**Key flags:**
-- `-x` — export mode (required)
-- `-f` — format: `png`, `svg`, `pdf`, `jpg`
-- `-e` — embed diagram XML in output (PNG, SVG, PDF) — exported file remains editable in draw.io. **Skip for the preview PNG used in step 5 self-check** — `-e` PNGs have a truncated IEND chunk that vision APIs reject (issue #8). For final PNG export, keep `-e` and run `scripts/repair_png.py` (see Post-export PNG repair). SVG/PDF unaffected.
-- `-s` — scale: `1`, `2`, `3` (2 recommended for final PNG; do NOT use for the step-4 preview — see `--width`)
-- `--width <px>` — target width in pixels (no short form; `-w` does **not** exist and silently breaks the input-file parser). Use `--width 2000` for the step-4 preview to keep the PNG under Claude's 2576×2576 vision ceiling. There's also a `--height <px>` flag for tall-narrow diagrams. Don't combine `--width` with `-s`.
-- `-o` — output file path; accepts any directory (e.g. `./artifacts/diagram.drawio.png`) — `mkdir -p` the target dir first. Use `.drawio.png` double extension when embedding.
-- `-b` — border width around diagram (default: 0, recommend 10)
-- `-t` — transparent background (PNG only)
-- `--page-index 0` — export specific page (default: all)
-
-### Browser fallback (no CLI needed)
-
-When the draw.io desktop CLI is unavailable, generate a client-side URL:
+When the draw.io desktop CLI is unavailable, use the browser fallback:
 
 ```bash
 python3 <this-skill-dir>/scripts/encode_drawio_url.py input.drawio          # read-only viewer
 python3 <this-skill-dir>/scripts/encode_drawio_url.py --edit input.drawio    # opens in the editor
 ```
-
-Default prints a `https://viewer.diagrams.net/...#R…` viewer URL; `--edit` prints a `https://app.diagrams.net/...#create=…` URL that opens straight into the editable editor. Either way the diagram XML is `encodeURIComponent`-encoded, deflate-compressed, and base64'd into the URL fragment — the fragment (after `#`) is never sent to the server, so nothing is uploaded. The `encodeURIComponent` step is mandatory: without it, any diagram containing a literal `%` or non-ASCII (e.g. CJK) label makes the browser throw "URI malformed" and the diagram never opens.
-
-Open the URL with `open "$URL"` (macOS) / `xdg-open "$URL"` (Linux). On **WSL2 / Windows**, `cmd.exe` drops the `#fragment` — write a `.url` shortcut file and open that instead (see `references/troubleshooting.md` → "WSL2 / Windows specifics").
-
-### Fallback chain
-
-When tools are unavailable, degrade gracefully:
-
-| Scenario | Behavior |
-|----------|----------|
-| draw.io CLI missing, Python available | Use browser fallback (diagrams.net URL) |
-| draw.io CLI missing, Python missing | Generate `.drawio` XML only; instruct user to open in draw.io desktop or diagrams.net manually |
-| draw.io CLI crashes / no output in macOS sandbox isolation | Treat CLI as unavailable in-sandbox; use browser fallback / XML-only; ask user to run CLI exports in a non-sandboxed host environment |
-| Vision unavailable for self-check | Skip self-check (step 5); proceed directly to showing user the exported PNG |
-| Export fails (Chromium/display issues) | On Linux, retry with `xvfb-run -a`; if still failing, deliver `.drawio` XML and suggest manual export |
-| Export fails on Linux server (headless) | Try in order: (1) `xvfb-run -a`, (2) append `--no-sandbox` at the very end if root, (3) add `--disable-gpu`, (4) `export HOME=/tmp`, (5) install apt deps (`libgtk-3-0 libnotify4 libnss3 libgbm1 libasound2t64` etc.), (6) fall back to [tomkludy/drawio-renderer](https://hub.docker.com/r/tomkludy/drawio-renderer) Docker (REST API for headless export) |
 
 ### Checking if drawio is in PATH
 

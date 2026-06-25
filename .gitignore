@@ -6,9 +6,22 @@
 logs/
 __pycache__/
 *.pyc
+*.pyo
+Thumbs.db
 
 # Auto-update timestamp (written by SKILL.md step 0)
 .last_update
 
 # Superpowers skill files (local-only)
 docs/superpowers
+
+# Local smoke-test/export artifacts
+*.tmp.drawio
+*-smoke.drawio
+*-smoke.png
+*-preview.png
+
+# Editor/local environment
+.vscode/
+.idea/
+.env
