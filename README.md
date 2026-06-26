@@ -1,18 +1,13 @@
-# drawio-skill — From Text to Professional Diagrams
+# drawio-skill-n — Personal Fork of drawio-skill
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/Agents365-ai/drawio-skill?style=flat&logo=github)](https://github.com/Agents365-ai/drawio-skill/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Agents365-ai/drawio-skill?style=flat&logo=github)](https://github.com/Agents365-ai/drawio-skill/network/members)
-[![Latest Release](https://img.shields.io/github/v/release/Agents365-ai/drawio-skill?logo=github)](https://github.com/Agents365-ai/drawio-skill/releases/latest)
-[![Last Commit](https://img.shields.io/github/last-commit/Agents365-ai/drawio-skill?logo=github)](https://github.com/Agents365-ai/drawio-skill/commits/main)
-
-[![SkillsMP](https://img.shields.io/badge/SkillsMP-listed-1f6feb)](https://skillsmp.com/skills/agents365-ai-drawio-skill-skills-drawio-skill-skill-md)
-[![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/drawio-pro-skill)
-[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
+[![Upstream](https://img.shields.io/badge/upstream-Agents365--ai%2Fdrawio--skill-blue)](https://github.com/Agents365-ai/drawio-skill)
+[![Personal Fork](https://img.shields.io/badge/fork-personal%20preferences-6f42c1)](https://github.com/NeroAyase/drawio-skill-n)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f)](https://agentskills.io)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/Fpbkw7cAhp)
 
 **English** · [中文](README_CN.md) · [📖 Online Docs](https://agents365-ai.github.io/drawio-skill/)
+
+This repository is a personal fork of [Agents365-ai/drawio-skill](https://github.com/Agents365-ai/drawio-skill). It keeps the original project's foundation and MIT license, while adding adjustments that fit my own Codex/draw.io workflow: leaner skill loading, stronger validation for dense Chinese swimlane diagrams, and a generic Chinese swimlane template. It is not an official replacement for the upstream project.
 
 A skill that turns natural-language descriptions into `.drawio` XML and exports them to PNG / SVG / PDF / JPG via the native draw.io desktop CLI. It can also turn an **existing codebase** (Python / JS-TS / Go / Rust) into an auto-laid-out structure diagram. Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
 
@@ -282,50 +277,14 @@ Part of the [Agents365-ai diagram-skill family](https://github.com/Agents365-ai)
 | [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML-focused | Class / sequence diagrams in CI pipelines |
 | [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill) | Whiteboard collaboration | Casual sketches, FigJam-style boards |
 
-## 💬 Community
+## 🙏 Upstream
 
-- **Discord:** https://discord.gg/Fpbkw7cAhp
-- **WeChat:** scan the QR code below
+This fork is based on the original work by **Agents365-ai**:
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="WeChat Community Group">
-</p>
+- Upstream repository: https://github.com/Agents365-ai/drawio-skill
+- Author profile: https://github.com/Agents365-ai
 
-## ❤️ Support
-
-If this skill helps you, consider supporting the author:
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/wechat-pay.png" width="180" alt="WeChat Pay">
-      <br>
-      <b>WeChat Pay</b>
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/alipay.png" width="180" alt="Alipay">
-      <br>
-      <b>Alipay</b>
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/buymeacoffee.png" width="180" alt="Buy Me a Coffee">
-      <br>
-      <b>Buy Me a Coffee</b>
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/awarding/award.gif" width="180" alt="Give a Reward">
-      <br>
-      <b>Give a Reward</b>
-    </td>
-  </tr>
-</table>
-
-## 👤 Author
-
-**Agents365-ai**
-
-- GitHub: https://github.com/Agents365-ai
-- Bilibili: https://space.bilibili.com/441831884
+The changes in this fork are personal workflow adjustments and are maintained for my own usage habits.
 
 ## 📄 License
 

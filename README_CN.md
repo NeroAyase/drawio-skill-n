@@ -1,18 +1,13 @@
-# drawio-skill —— 从文字到专业图表
+# drawio-skill-n —— drawio-skill 的个人使用习惯调整版
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/Agents365-ai/drawio-skill?style=flat&logo=github)](https://github.com/Agents365-ai/drawio-skill/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/Agents365-ai/drawio-skill?style=flat&logo=github)](https://github.com/Agents365-ai/drawio-skill/network/members)
-[![Latest Release](https://img.shields.io/github/v/release/Agents365-ai/drawio-skill?logo=github)](https://github.com/Agents365-ai/drawio-skill/releases/latest)
-[![Last Commit](https://img.shields.io/github/last-commit/Agents365-ai/drawio-skill?logo=github)](https://github.com/Agents365-ai/drawio-skill/commits/main)
-
-[![SkillsMP](https://img.shields.io/badge/SkillsMP-listed-1f6feb)](https://skillsmp.com/skills/agents365-ai-drawio-skill-skills-drawio-skill-skill-md)
-[![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/drawio-pro-skill)
-[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
+[![上游项目](https://img.shields.io/badge/upstream-Agents365--ai%2Fdrawio--skill-blue)](https://github.com/Agents365-ai/drawio-skill)
+[![个人 Fork](https://img.shields.io/badge/fork-personal%20preferences-6f42c1)](https://github.com/NeroAyase/drawio-skill-n)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-兼容-2ea44f)](https://agentskills.io)
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/Fpbkw7cAhp)
 
 [English](README.md) · **中文** · [📖 在线文档](https://agents365-ai.github.io/drawio-skill/)
+
+这个仓库是基于 [Agents365-ai/drawio-skill](https://github.com/Agents365-ai/drawio-skill) 的个人 fork。它保留原项目的基础能力和 MIT 许可证，在此基础上加入更符合我个人 Codex/draw.io 使用习惯的调整：更轻量的 skill 加载方式、更强的中文密集泳道图校验，以及通用中文泳道模板。它不是上游项目的官方替代版。
 
 一个把自然语言描述变成 `.drawio` XML，并通过 draw.io 桌面版原生 CLI 导出 PNG / SVG / PDF / JPG 的技能。它还能把**现有代码库**（Python / JS-TS / Go / Rust）转成自动布局的结构图。支持 **Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes** 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
 
@@ -280,50 +275,14 @@ Skill 会提取配色、形状、字体和连线风格，渲染预览图，**确
 | [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML 专精 | CI 流水线里的类图 / 序列图 |
 | [tldraw-skill](https://github.com/Agents365-ai/tldraw-skill) | 白板协作 | 随手画、FigJam 风格 |
 
-## 💬 社区
+## 🙏 上游致谢
 
-- **Discord：** https://discord.gg/Fpbkw7cAhp
-- **微信：** 扫描下方二维码
+本 fork 基于 **Agents365-ai** 的原始项目：
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="微信交流群">
-</p>
+- 上游仓库：https://github.com/Agents365-ai/drawio-skill
+- 作者主页：https://github.com/Agents365-ai
 
-## ❤️ 支持作者
-
-如果这个 skill 对你有帮助，欢迎支持作者：
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/wechat-pay.png" width="180" alt="微信支付">
-      <br>
-      <b>微信支付</b>
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/alipay.png" width="180" alt="支付宝">
-      <br>
-      <b>支付宝</b>
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/buymeacoffee.png" width="180" alt="Buy Me a Coffee">
-      <br>
-      <b>Buy Me a Coffee</b>
-    </td>
-    <td align="center">
-      <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/awarding/award.gif" width="180" alt="打赏">
-      <br>
-      <b>打赏</b>
-    </td>
-  </tr>
-</table>
-
-## 👤 作者
-
-**Agents365-ai**
-
-- GitHub: https://github.com/Agents365-ai
-- Bilibili: https://space.bilibili.com/441831884
+本仓库中的改动是个人工作流调整，主要服务于我自己的使用习惯。
 
 ## 📄 许可证
 
